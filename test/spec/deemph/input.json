@@ -1,0 +1,195 @@
+[
+  {
+    "unMeta": {}
+  },
+  [
+    {
+      "c": [
+        1,
+        [
+          "a-special-header",
+          [],
+          []
+        ],
+        [
+          {
+            "c": "A",
+            "t": "Str"
+          },
+          {
+            "c": [],
+            "t": "Space"
+          },
+          {
+            "c": [
+              {
+                "c": "special",
+                "t": "Str"
+              }
+            ],
+            "t": "Emph"
+          },
+          {
+            "c": [],
+            "t": "Space"
+          },
+          {
+            "c": "header",
+            "t": "Str"
+          }
+        ]
+      ],
+      "t": "Header"
+    },
+    {
+      "c": [
+        {
+          "c": "The",
+          "t": "Str"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": "quick",
+          "t": "Str"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": [
+            {
+              "c": "brown",
+              "t": "Str"
+            }
+          ],
+          "t": "Emph"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": "fox",
+          "t": "Str"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": "jumpped.",
+          "t": "Str"
+        }
+      ],
+      "t": "Para"
+    },
+    {
+      "c": [
+        {
+          "c": "The",
+          "t": "Str"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": [
+            {
+              "c": "quick",
+              "t": "Str"
+            },
+            {
+              "c": [],
+              "t": "Space"
+            },
+            {
+              "c": [
+                {
+                  "c": "brown",
+                  "t": "Str"
+                }
+              ],
+              "t": "Emph"
+            },
+            {
+              "c": [],
+              "t": "Space"
+            },
+            {
+              "c": "fox",
+              "t": "Str"
+            }
+          ],
+          "t": "Strong"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": "jumped.",
+          "t": "Str"
+        }
+      ],
+      "t": "Para"
+    },
+    {
+      "c": [
+        [
+          {
+            "c": [
+              {
+                "c": "Buy",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": [
+                  {
+                    "c": "milk",
+                    "t": "Str"
+                  }
+                ],
+                "t": "Emph"
+              }
+            ],
+            "t": "Plain"
+          }
+        ],
+        [
+          {
+            "c": [
+              {
+                "c": "Eat",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": [
+                  {
+                    "c": "cookies",
+                    "t": "Str"
+                  }
+                ],
+                "t": "Emph"
+              }
+            ],
+            "t": "Plain"
+          }
+        ]
+      ],
+      "t": "BulletList"
+    }
+  ]
+]

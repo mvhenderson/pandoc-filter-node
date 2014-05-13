@@ -1,0 +1,94 @@
+[
+  {
+    "unMeta": {}
+  },
+  [
+    {
+      "c": [
+        [
+          {
+            "c": [
+              {
+                "c": [
+                  {
+                    "c": "banana",
+                    "t": "Str"
+                  }
+                ],
+                "t": "Strong"
+              }
+            ],
+            "t": "Para"
+          },
+          {
+            "c": [
+              {
+                "c": "a",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": "yellow",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": "fruit",
+                "t": "Str"
+              }
+            ],
+            "t": "Plain"
+          }
+        ],
+        [
+          {
+            "c": [
+              {
+                "c": [
+                  {
+                    "c": "carrot",
+                    "t": "Str"
+                  }
+                ],
+                "t": "Strong"
+              }
+            ],
+            "t": "Para"
+          },
+          {
+            "c": [
+              {
+                "c": "an",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": "orange",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": "veggie",
+                "t": "Str"
+              }
+            ],
+            "t": "Plain"
+          }
+        ]
+      ],
+      "t": "BulletList"
+    }
+  ]
+]

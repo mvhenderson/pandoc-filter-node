@@ -1,0 +1,103 @@
+[
+  {
+    "unMeta": {
+      "msg": {
+        "c": [
+          {
+            "c": "the",
+            "t": "Str"
+          },
+          {
+            "c": [],
+            "t": "Space"
+          },
+          {
+            "c": [
+              {
+                "c": "quick",
+                "t": "Str"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": [
+                  {
+                    "c": "brown",
+                    "t": "Str"
+                  }
+                ],
+                "t": "Strong"
+              },
+              {
+                "c": [],
+                "t": "Space"
+              },
+              {
+                "c": "fox",
+                "t": "Str"
+              }
+            ],
+            "t": "Emph"
+          },
+          {
+            "c": [],
+            "t": "Space"
+          },
+          {
+            "c": "jumped",
+            "t": "Str"
+          }
+        ],
+        "t": "MetaInlines"
+      },
+      "foo": {
+        "c": "bar",
+        "t": "MetaString"
+      }
+    }
+  },
+  [
+    {
+      "c": [
+        {
+          "c": "%{foo}",
+          "t": "Str"
+        }
+      ],
+      "t": "Para"
+    },
+    {
+      "c": [
+        {
+          "c": "Hello",
+          "t": "Str"
+        },
+        {
+          "c": [],
+          "t": "Space"
+        },
+        {
+          "c": "%{foo}",
+          "t": "Str"
+        }
+      ],
+      "t": "Para"
+    },
+    {
+      "c": [
+        {
+          "c": [
+            {
+              "c": "%{msg}",
+              "t": "Str"
+            }
+          ],
+          "t": "Para"
+        }
+      ],
+      "t": "BlockQuote"
+    }
+  ]
+]
