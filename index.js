@@ -85,13 +85,15 @@ function walk(x, action, format, meta) {
  * @return {String}   JSON string
  */
 function stringify(x) {
+	if (x === Object(x) && x.t === 'MetaString') return x.c;
+
   var result = [];
   var go = function (key, val) {
-    if (key === 'Str') result.append(val);
-    else if (key === 'Code') result.append(val[1]);
-    else if (key === 'Math') result.append(val[1]);
-    else if (key === 'LineBreak') result.append(' ');
-    else if (key === 'Space') result.append(' ');
+    if (key === 'Str') result.push(val);
+    else if (key === 'Code') result.push(val[1]);
+    else if (key === 'Math') result.push(val[1]);
+    else if (key === 'LineBreak') result.push(' ');
+    else if (key === 'Space') result.push(' ');
   };
   walk(x, go, '', {});
   return result.join('');
