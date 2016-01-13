@@ -166,7 +166,7 @@ module.exports = {
 	Formula: elt('Math',2), // don't conflict with js builtin Math
 	RawInline: elt('RawInline',2),
 	Link: elt('Link',2),
-	Image: elt('Image',2),
+	Image: elt('Image',3),
 	Note: elt('Note',1),
 	Span: elt('Span',2),
 
