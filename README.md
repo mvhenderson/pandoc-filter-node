@@ -25,6 +25,11 @@ function action(type,value,format,meta) {
 pandoc.stdio(action);
 ```
 
+## Compatibility Note
+
+`v0.1.5` is required for pandoc versions after `1.17.2` to support the new JSON
+format. See [this issue](https://github.com/mvhenderson/pandoc-filter-node/issues/5) for details.
+
 ## Credits
 
 Thanks to [John MacFarlane](https://github.com/jgm) for Pandoc.
