@@ -33,7 +33,7 @@ function toJSONFilter(action) {
  * Filter the given object
  */
 function filter(data, action, format) {
-  return walk(data, action, format, data[0].unMeta);
+  return walk(data, action, format, data.meta || data[0].unMeta);
 }
 
 /**
@@ -50,6 +50,7 @@ function walk(x, action, format, meta) {
     x.forEach(function (item) {
       if (item === Object(item) && item.t) {
         var res = action(item.t, item.c, format, meta);
+        var res = action(item.t, item.c || [], format, meta)
         if (!res) {
           array.push(walk(item, action, format, meta));
         }
