@@ -49,7 +49,6 @@ function walk(x, action, format, meta) {
     var array = [];
     x.forEach(function (item) {
       if (item === Object(item) && item.t) {
-        var res = action(item.t, item.c, format, meta);
         var res = action(item.t, item.c || [], format, meta)
         if (!res) {
           array.push(walk(item, action, format, meta));
