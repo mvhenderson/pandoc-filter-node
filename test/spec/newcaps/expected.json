@@ -1,0 +1,22 @@
+{
+	"pandoc-api-version" : ["major", "minor", "patch"],
+	"meta" : {},
+	"blocks": [
+    {
+      "c": [
+        {
+          "c": "HELLO",
+          "t": "Str"
+        },
+        {
+          "t": "Space"
+        },
+        {
+          "c": "WORLD.",
+          "t": "Str"
+        }
+      ],
+      "t": "Para"
+    }
+  ]
+}

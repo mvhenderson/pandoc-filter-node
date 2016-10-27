@@ -1,0 +1,165 @@
+{
+	"pandoc-api-version" : ["major", "minor", "patch"],
+	"meta" : {
+		"foo": {
+			"t": "MetaString",
+			"c": "bar"
+		},
+		"msg": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space",
+					"c": []
+				},
+				{
+					"t": "Emph",
+					"c": [
+						{
+							"t": "Str",
+							"c": "quick"
+						},
+						{
+							"t": "Space",
+							"c": []
+						},
+						{
+							"t": "Strong",
+							"c": [
+								{
+									"t": "Str",
+									"c": "brown"
+								}
+							]
+						},
+						{
+							"t": "Space",
+							"c": []
+						},
+						{
+							"t": "Str",
+							"c": "fox"
+						}
+					]
+				},
+				{
+					"t": "Space",
+					"c": []
+				},
+				{
+					"t": "Str",
+					"c": "jumped"
+				}
+			]
+		}
+	},
+	"blocks": [
+		{
+			"t": "Para",
+			"c": [
+				{
+					"c": "bar",
+					"t": "Str"
+				}
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Hello"
+				},
+				{
+					"t": "Space",
+					"c": []
+				},
+				{
+					"c": "bar",
+					"t": "Str"
+				}
+			]
+		},
+		{
+			"t": "BlockQuote",
+			"c": [
+				{
+					"t": "Para",
+					"c": [
+						{
+							"c": [
+								[
+									"",
+									[],
+									[
+										[
+											"class",
+											"interpolated"
+										],
+										[
+											"field",
+											"msg"
+										]
+									]
+								],
+								[
+									{
+										"t": "Str",
+										"c": "the"
+									},
+									{
+										"t": "Space",
+										"c": []
+									},
+									{
+										"t": "Emph",
+										"c": [
+											{
+												"t": "Str",
+												"c": "quick"
+											},
+											{
+												"t": "Space",
+												"c": []
+											},
+											{
+												"t": "Strong",
+												"c": [
+													{
+														"t": "Str",
+														"c": "brown"
+													}
+												]
+											},
+											{
+												"t": "Space",
+												"c": []
+											},
+											{
+												"t": "Str",
+												"c": "fox"
+											}
+										]
+									},
+									{
+										"t": "Space",
+										"c": []
+									},
+									{
+										"t": "Str",
+										"c": "jumped"
+									}
+								]
+							],
+							"t": "Span"
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -59,4 +59,19 @@ describe('Filter', function () {
 			done();
 		});
 	});
+	it('caps - new JSON', function (done) {
+		run('newcaps', '', function (error,expected,actual) {
+			if (error) done(error);
+			actual.should.eql(expected);
+			done();
+		});
+	});
+	it('meta - new JSON', function (done) {
+		run('newmeta', '', function (error,expected,actual) {
+			if (error) done(error);
+			actual.should.eql(expected);
+			done();
+		});
+	});
+
 });
