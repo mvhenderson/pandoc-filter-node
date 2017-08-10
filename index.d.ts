@@ -149,7 +149,7 @@ export function Cite(a : Array<Citation>, b : Array<Inline>) : Elt<"Cite">;
 export function Code(a : Attr, b : string) : Elt<"Code">;
 export function Space() : Elt<"Space">;
 export function SoftBreak() : Elt<"SoftBreak">;
-export function LineBreak(undefined) : Elt<"LineBreak">;
+export function LineBreak() : Elt<"LineBreak">;
 export function Math(a : MathType, b : string) : Elt<"Math">;
 export function RawInline(a : Format, b : string) : Elt<"RawInline">;
 export function Link(a : Attr, b : Array<Inline>, c : Target) : Elt<"Link">;
