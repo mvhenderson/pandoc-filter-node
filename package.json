@@ -10,6 +10,7 @@
     "node": ">=0.8.0"
   },
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec -s 125"
   },
