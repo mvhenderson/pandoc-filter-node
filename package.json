@@ -1,6 +1,6 @@
 {
   "name": "pandoc-filter",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Pandoc filtering for Node.js",
   "license": "MIT",
   "repository": "mvhenderson/pandoc-filter-node",
