@@ -25,7 +25,31 @@ function action(type,value,format,meta) {
 pandoc.stdio(action);
 ```
 
-## Compatibility Note
+Async using native promise
+
+```javascript
+#!/usr/bin/env node
+'use strict';
+
+var pandoc = require('../../../index');
+var rp = require('request-promise-native');
+var Str = pandoc.Str;
+
+async function action(type,value,format,meta) {
+	if (type === 'Str') return rp({
+		uri: value,
+		json: true
+	}).then(function (data) {
+		return Str(data.places[0]["post code"]);
+	})
+}
+
+pandoc.stdioAsync(action);
+```
+
+## Compatibility Notes
+
+Required node `>=v7.6` for async/await/promise support.
 
 `v0.1.6` is required for pandoc versions after `1.17.2` to support the new JSON
 format. See [this issue](https://github.com/mvhenderson/pandoc-filter-node/issues/5) for details.
