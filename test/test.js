@@ -73,5 +73,12 @@ describe('Filter', function () {
 			done();
 		});
 	});
+	it('async - native promise', function (done) {
+		run('async', '', function (error,expected,actual) {
+			if (error) done(error);
+			actual.should.eql(expected);
+			done();
+		});
+	});
 
 });

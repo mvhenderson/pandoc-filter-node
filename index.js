@@ -126,12 +126,59 @@ function elt(eltType, numargs) {
 	};
 }
 
+async function walkAsync(x, action, format, meta) {
+  if (Array.isArray(x)) {
+    const array = [];
+    for (const item of x) {
+      if (item === Object(item) && item.t) {
+        var res = await action(item.t, item.c || [], format, meta);
+        if (!res) {
+          array.push(await walkAsync(item, action, format, meta));
+        }
+        else if (Array.isArray(res)) {
+          for (const z of res) {
+            array.push(await walkAsync(z, action, format, meta));
+          };
+        }
+        else {
+          array.push(await walkAsync(res, action, format, meta));
+        }
+      }
+      else {
+        array.push(await walkAsync(item, action, format, meta));
+      }
+    }
+    return array;
+  }
+  else if (x === Object(x)) {
+    var obj = {};
+    for (const k of Object.keys(x)) {
+      obj[k] = await walkAsync(x[k], action, format, meta);
+    }
+    return obj;
+  }
+  return x;
+}
+
+async function filterAsync(data, action, format) {
+  return await walkAsync(data, action, format, data.meta || data[0].unMeta);
+}
+
+function toJSONFilterAsync(action) {
+  require('get-stdin')(function (json) {
+    var data = JSON.parse(json);
+    var format = (process.argv.length > 2 ? process.argv[2] : '');
+    filterAsync(data, action, format).then(output => process.stdout.write(JSON.stringify(output)));
+  });
+}
 module.exports = {
 	// filter functions
   toJSONFilter: toJSONFilter,
   walk: walk,
   stringify: stringify,
   attributes: attributes,
+  toJSONFilterAsync: toJSONFilterAsync,
+  walkAsync: walkAsync,
 
 	// Constructors for block elements
 
@@ -173,8 +220,7 @@ module.exports = {
   // a few aliases
   stdio: toJSONFilter,
   filter: filter,
+  stdioAsync: toJSONFilterAsync,
+  filterAsync: filterAsync,
 
 };
-
-
-

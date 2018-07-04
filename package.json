@@ -1,13 +1,13 @@
 {
   "name": "pandoc-filter",
-  "version": "0.1.8",
+  "version": "1.0.0",
   "description": "Pandoc filtering for Node.js",
   "license": "MIT",
   "repository": "mvhenderson/pandoc-filter-node",
   "bugs": "https://github.com/mvhenderson/pandoc-filter-node/issues",
   "author": "Mike Henderson",
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=7.6.0"
   },
   "main": "index.js",
   "types": "index.d.ts",
@@ -21,6 +21,8 @@
   ],
   "devDependencies": {
     "mocha": "*",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
     "should": "~3.3.1"
   },
   "dependencies": {
