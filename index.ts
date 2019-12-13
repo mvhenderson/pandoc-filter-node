@@ -4,23 +4,43 @@
  */
 "use strict";
 
-type PandocJson = {
+/**
+ * type of the JSON file (new syntax, old syntax was just the array of blocks)
+ */
+export type PandocJson = {
 	blocks: Block[];
 	"pandoc-api-version": number[];
 	meta: PandocMetaMap;
 };
-export type FilterAction = (
+type FAReturn = void | AnyElt | Array<AnyElt>;
+
+export type SingleFilterAction = (
 	ele: AnyElt,
 	format: string,
 	meta: PandocMetaMap,
-) => void | AnyElt | Array<AnyElt>;
+) => FAReturn;
+export type ArrayFilterAction = (
+	ele: AnyElt[],
+	format: string,
+	meta: PandocMetaMap,
+) => Array<AnyElt>;
+export type FilterAction =
+	| SingleFilterAction
+	| { array?: ArrayFilterAction; single?: SingleFilterAction };
 
-export type FilterActionAsync = (
+export type SingleFilterActionAsync = (
 	ele: AnyElt,
 	format: string,
 	meta: PandocMetaMap,
-) => Promise<void | AnyElt | Array<AnyElt>>;
-
+) => Promise<FAReturn>;
+export type ArrayFilterActionAsync = (
+	ele: AnyElt[],
+	format: string,
+	meta: PandocMetaMap,
+) => Promise<Array<AnyElt>>;
+export type FilterActionAsync =
+	| SingleFilterActionAsync
+	| { array?: ArrayFilterActionAsync; single?: SingleFilterActionAsync };
 export type AttrList = Array<[string, string]>;
 
 export type Attr = [string, Array<string>, AttrList];
@@ -192,15 +212,11 @@ export function toJSONFilter(action: FilterAction): void {
 	});
 }
 
-/**
- * Filter the given object
- */
-export function filter(data: PandocJson, action: FilterAction, format: Format) {
-	return walk(data, action, format, data.meta || (data as any)[0].unMeta);
-}
-
-function isElt(x: unknown): x is Elt<any> {
+function isElt(x: unknown): x is AnyElt {
 	return (typeof x === "object" && x && "t" in x) || false;
+}
+function isEltArray(x: unknown[]): x is AnyElt[] {
+	return x.every(isElt);
 }
 /**
  * Walk a tree, applying an action to every object.
@@ -216,21 +232,22 @@ export function walk(
 	format: Format,
 	meta: PandocMetaMap,
 ): unknown {
+	if (typeof action === "function") action = { single: action };
 	if (Array.isArray(x)) {
+		if (action.array && isEltArray(x)) {
+			x = action.array(x, format, meta);
+			if (!Array.isArray(x)) throw "impossible (just for ts)";
+		}
 		var array: unknown[] = [];
-		for (const item of x) {
-			if (isElt(item)) {
-				var res = action(item, format, meta) || item;
-				if (Array.isArray(res)) {
-					for (const z of res) {
-						array.push(walk(z, action, format, meta));
-					}
-				} else {
-					array.push(walk(res, action, format, meta));
-				}
-			} else {
-				array.push(walk(item, action, format, meta));
+		for (let item of x) {
+			let flatten = false;
+			if (isElt(item) && action.single) {
+				item = action.single(item, format, meta) || item;
+				if (Array.isArray(item)) flatten = true;
 			}
+			item = walk(item, action, format, meta);
+			if (flatten) array.push(...item);
+			else array.push(item);
 		}
 		return array;
 	} else if (typeof x === "object" && x !== null) {
@@ -248,11 +265,16 @@ export async function walkAsync(
 	format: Format,
 	meta: PandocMetaMap,
 ): Promise<unknown> {
+	if (typeof action === "function") action = { single: action };
 	if (Array.isArray(x)) {
+		if (action.array && isEltArray(x)) {
+			x = await action.array(x, format, meta);
+			if (!Array.isArray(x)) throw "impossible (just for ts)";
+		}
 		var array: unknown[] = [];
 		for (const item of x) {
-			if (isElt(item)) {
-				var res = (await action(item, format, meta)) || item;
+			if (isElt(item) && action.single) {
+				var res = (await action.single(item, format, meta)) || item;
 				if (Array.isArray(res)) {
 					for (const z of res) {
 						array.push(await walkAsync(z, action, format, meta));
@@ -312,7 +334,14 @@ export function attributes(attrs: { [k: string]: any }): Attr {
 	return [ident, classes, keyvals];
 }
 
-type WrapArray<T> = T extends undefined ? [] : T extends any[] ? T : [T];
+type IsTuple<T extends any[]> = number extends T["length"] ? false : true;
+type WrapArray<T> = T extends undefined
+	? []
+	: T extends any[]
+	? IsTuple<T> extends true
+		? T
+		: [T]
+	: [T];
 
 // Utility for creating constructor functions
 function elt<T extends EltType>(
@@ -331,12 +360,29 @@ function elt<T extends EltType>(
 	};
 }
 
+/**
+ * Filter the given object
+ */
+export function filter(data: PandocJson, action: FilterAction, format: Format) {
+	return walk(
+		data,
+		action,
+		format,
+		data.meta || (data as any)[0].unMeta,
+	) as PandocJson;
+}
+
 export async function filterAsync(
 	data: PandocJson,
 	action: FilterActionAsync,
 	format: Format,
 ) {
-	return await walkAsync(data, action, format, data.meta || (data as any)[0].unMeta);
+	return (await walkAsync(
+		data,
+		action,
+		format,
+		data.meta || (data as any)[0].unMeta,
+	)) as PandocJson;
 }
 
 export function toJSONFilterAsync(action: FilterActionAsync) {
