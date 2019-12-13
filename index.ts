@@ -313,6 +313,8 @@ export function stringify(x: Tree | AnyElt | { t: "MetaString"; c: string }) {
 		else if (e.t === "Math") result.push(e.c[1]);
 		else if (e.t === "LineBreak") result.push(" ");
 		else if (e.t === "Space") result.push(" ");
+		else if (e.t === "SoftBreak") result.push(" ");
+		else if (e.t === "Para") result.push("\n");
 	};
 	walk(x, go, "", {});
 	return result.join("");
@@ -393,6 +395,57 @@ export function toJSONFilterAsync(action: FilterActionAsync) {
 			process.stdout.write(JSON.stringify(output)),
 		);
 	});
+}
+
+type RawMetaRecord = { [name: string]: RawMeta };
+type RawMeta = string | boolean | RawMetaRecord | Array<RawMeta>;
+/** `.meta` in the pandoc json format describes the markdown frontmatter yaml as an AST as described in
+ *  https://hackage.haskell.org/package/pandoc-types-1.20/docs/Text-Pandoc-Definition.html#t:MetaValue
+ *
+ * this function converts a raw object to a pandoc meta AST object
+ **/
+export function rawToMeta(e: RawMeta): PandocMetaValue {
+	if (Array.isArray(e)) {
+		return { t: "MetaList", c: e.map(x => rawToMeta(x)) };
+	}
+	// warning: information loss: can't tell if it was a number or string
+	if (typeof e === "string" || typeof e === "number")
+		return { t: "MetaString", c: String(e) };
+	if (typeof e === "object") {
+		const c = fromEntries(
+			Object.entries(e).map(([k, v]) => [k, rawToMeta(v)]),
+		);
+		return { t: "MetaMap", c };
+	}
+	throw Error(typeof e);
+}
+
+export function metaToRaw(m: PandocMetaValue): RawMeta {
+	if (m.t === "MetaMap") {
+		return fromEntries(
+			Object.entries(m.c).map(([k, v]) => [k, metaToRaw(v)]),
+		);
+	} else if (m.t === "MetaList") {
+		return m.c.map(metaToRaw);
+	} else if (m.t === "MetaBool" || m.t === "MetaString") {
+		return m.c;
+	} else if (m.t === "MetaInlines" || m.t === "MetaBlocks") {
+		// warning: information loss: removes formatting
+		return stringify(m.c);
+	}
+	throw Error("never");
+}
+/** meta root object is a map */
+export function metaMapToRaw(c: PandocMetaMap): RawMetaRecord {
+	return metaToRaw({ t: "MetaMap", c }) as any;
+}
+
+/** Object.fromEntries ponyfill */
+function fromEntries<V>(iterable: Iterable<[string, V]>): Record<string, V> {
+	return [...iterable].reduce((obj, [key, val]) => {
+		obj[key] = val;
+		return obj;
+	}, {} as Record<string, V>);
 }
 
 // Constructors for block elements
