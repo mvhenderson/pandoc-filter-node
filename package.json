@@ -1,41 +1,41 @@
 {
-  "name": "pandoc-filter",
-  "version": "1.0.0",
-  "description": "Pandoc filtering for Node.js",
-  "license": "MIT",
-  "repository": "mvhenderson/pandoc-filter-node",
-  "bugs": "https://github.com/mvhenderson/pandoc-filter-node/issues",
-  "author": "Mike Henderson",
-  "engines": {
-    "node": ">=7.6.0"
-  },
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "test": "./node_modules/.bin/mocha -R spec -s 125"
-  },
-  "keywords": [
-    "pandoc",
-    "filter",
-    "pandocfilter"
-  ],
-  "devDependencies": {
-    "mocha": "*",
-    "request": "^2.87.0",
-    "request-promise-native": "^1.0.5",
-    "should": "~3.3.1",
-    "typescript": "^3.7.3"
-  },
-  "dependencies": {
-    "@types/node": "^12.12.17",
-    "get-stdin": "~0.1.0"
-  },
-  "prettier": {
-    "semi": true,
-    "tabWidth": 4,
-    "useTabs": true,
-    "trailingComma": "all",
-    "printWidth": 80,
-    "endOfLine": "lf"
-  }
+	"name": "@phiresky/pandoc-filter",
+	"version": "2.0.0",
+	"description": "Pandoc filtering for Node.js",
+	"license": "MIT",
+	"repository": "mvhenderson/pandoc-filter-node",
+	"bugs": "https://github.com/mvhenderson/pandoc-filter-node/issues",
+	"author": "Mike Henderson",
+	"engines": {
+		"node": ">=7.6.0"
+	},
+	"main": "index.js",
+	"types": "index.d.ts",
+	"scripts": {
+		"test": "./node_modules/.bin/mocha -R spec -s 125"
+	},
+	"keywords": [
+		"pandoc",
+		"filter",
+		"pandocfilter"
+	],
+	"devDependencies": {
+		"mocha": "*",
+		"request": "^2.87.0",
+		"request-promise-native": "^1.0.5",
+		"should": "~3.3.1",
+		"typescript": "^3.7.3"
+	},
+	"dependencies": {
+		"@types/node": "^12.12.17",
+		"get-stdin": "~0.1.0"
+	},
+	"prettier": {
+		"semi": true,
+		"tabWidth": 4,
+		"useTabs": true,
+		"trailingComma": "all",
+		"printWidth": 80,
+		"endOfLine": "lf"
+	}
 }
