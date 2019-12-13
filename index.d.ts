@@ -10,12 +10,12 @@ export type AttrList = Array<[string, string]>;
 
 export type Attr = [string, Array<string>, AttrList];
 
-export type MathType = "DisplayMath" | "InlineMath";
-export type QuoteType = "SingleQuote" | "DoubleQuote";
+export type MathType = {t: "DisplayMath" | "InlineMath"};
+export type QuoteType = {t: "SingleQuote" | "DoubleQuote"};
 export type Target = [string, string]; // [url, title]
 export type Format = string;
 
-export type CitationMode = "AuthorInText" | "SuppressAuthor" | "NormalCitation";
+export type CitationMode = {t: "AuthorInText" | "SuppressAuthor" | "NormalCitation"};
 
 export type Citation = {
     citationId : string;
@@ -27,27 +27,27 @@ export type Citation = {
 };
 
 export type ListNumberStyle
-    = "DefaultStyle"
+    = {t: "DefaultStyle"
     | "Example"
     | "Decimal"
     | "LowerRoman"
     | "UpperRoman"
     | "LowerAlpha"
-    | "UpperAlpha";
+    | "UpperAlpha"};
 
 export type ListNumberDelim
-    = "DefaultDelim"
+    = {t: "DefaultDelim"
     | "Period"
     | "OneParen"
-    | "TwoParens";
+    | "TwoParens"};
 
 export type ListAttributes = [number, ListNumberStyle, ListNumberDelim];
 
 export type Alignment
-    = "AlignLeft"
+    = {t: "AlignLeft"
     | "AlignRight"
     | "AlignCenter"
-    | "AlignDefault";
+    | "AlignDefault"};
 
 export type TableCell = Array<Block>;
 
