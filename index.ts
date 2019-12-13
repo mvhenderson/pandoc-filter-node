@@ -196,7 +196,7 @@ export function toJSONFilter(action: FilterAction): void {
  * Filter the given object
  */
 export function filter(data: PandocJson, action: FilterAction, format: Format) {
-	return walk(data, action, format, data.meta);
+	return walk(data, action, format, data.meta || (data as any)[0].unMeta);
 }
 
 function isElt(x: unknown): x is Elt<any> {
@@ -336,7 +336,7 @@ export async function filterAsync(
 	action: FilterActionAsync,
 	format: Format,
 ) {
-	return await walkAsync(data, action, format, data.meta);
+	return await walkAsync(data, action, format, data.meta || (data as any)[0].unMeta);
 }
 
 export function toJSONFilterAsync(action: FilterActionAsync) {

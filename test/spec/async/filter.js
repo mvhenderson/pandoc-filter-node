@@ -7,7 +7,7 @@ var pandoc = require('../../../index');
 var rp = require('request-promise-native');
 var Str = pandoc.Str;
 
-async function action(type,value,format,meta) {
+async function action({t: type, c: value},format,meta) {
 	if (type === 'Str') return rp({
 		uri: value,
 		json: true

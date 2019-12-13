@@ -8,11 +8,11 @@
 
 var pandoc = require('../../../index');
 
-function caps(type,value,format,meta) {
+function caps({t: type, c: value},format,meta) {
 	if (type === 'Str') return pandoc.Str(value.toUpperCase());
 }
 
-function action(type,value,format,meta) {
+function action({t: type, c: value},format,meta) {
 	if (type === 'Emph') {
 		return pandoc.walk(value,caps,format,meta);
 	}

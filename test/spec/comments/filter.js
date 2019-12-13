@@ -13,7 +13,7 @@ var pandoc = require('../../../index');
 
 var incomment = false;
 
-function action(type,value,format,meta) {
+function action({t: type, c: value},format,meta) {
 	if (type === 'RawBlock') {
 		if (value[0] === 'html') {
 			if (value[1].indexOf('<!-- BEGIN COMMENT -->') !== -1) {

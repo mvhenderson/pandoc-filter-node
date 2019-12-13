@@ -14,7 +14,7 @@ var Str = pandoc.Str;
 var Span = pandoc.Span;
 var attributes = pandoc.attributes;
 
-function action(type,value,format,meta) {
+function action({t: type, c: value},format,meta) {
 	if (type === 'Str') {
 		var m = value.match(/%\{(.*)\}$/);
 		if (m) {
