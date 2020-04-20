@@ -1,5 +1,5 @@
 {
-	"name": "@phiresky/pandoc-filter",
+	"name": "pandoc-filter",
 	"version": "2.0.0",
 	"description": "Pandoc filtering for Node.js",
 	"license": "MIT",
