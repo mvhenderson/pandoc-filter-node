@@ -325,7 +325,11 @@ export function stringify(x: Tree | AnyElt | { t: "MetaString"; c: string }) {
  * @param  {Object} attrs Attribute dictionary
  * @return {Array}        Attribute list
  */
-export function attributes(attrs: { [k: string]: any }): Attr {
+export function attributes(attrs: {
+	id?: string;
+	classes?: string[];
+	[k: string]: any;
+}): Attr {
 	attrs = attrs || {};
 	var ident = attrs.id || "";
 	var classes = attrs.classes || [];
@@ -417,6 +421,7 @@ export function rawToMeta(e: RawMeta): PandocMetaValue {
 		);
 		return { t: "MetaMap", c };
 	}
+	if (typeof e === "boolean") return { t: "MetaBool", c: e };
 	throw Error(typeof e);
 }
 
