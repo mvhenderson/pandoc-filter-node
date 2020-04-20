@@ -4,6 +4,8 @@
  */
 "use strict";
 
+import getStdin from "get-stdin";
+
 /**
  * type of the JSON file (new syntax, old syntax was just the array of blocks)
  */
@@ -203,13 +205,12 @@ export type PandocMetaMap = Record<string, PandocMetaValue>;
  *
  * @param  {Function} action Callback to apply to every object
  */
-export function toJSONFilter(action: FilterAction): void {
-	require("get-stdin")(function(json: string) {
-		var data = JSON.parse(json);
-		var format = process.argv.length > 2 ? process.argv[2] : "";
-		var output = filter(data, action, format);
-		process.stdout.write(JSON.stringify(output));
-	});
+export async function toJSONFilter(action: FilterAction): Promise<void> {
+	const json = await getStdin();
+	var data = JSON.parse(json);
+	var format = process.argv.length > 2 ? process.argv[2] : "";
+	var output = filter(data, action, format);
+	process.stdout.write(JSON.stringify(output));
 }
 
 function isElt(x: unknown): x is AnyElt {
@@ -307,7 +308,7 @@ export function stringify(x: Tree | AnyElt | { t: "MetaString"; c: string }) {
 	if (!Array.isArray(x) && x.t === "MetaString") return x.c;
 
 	var result: string[] = [];
-	var go = function(e: AnyElt) {
+	var go = function (e: AnyElt) {
 		if (e.t === "Str") result.push(e.c);
 		else if (e.t === "Code") result.push(e.c[1]);
 		else if (e.t === "Math") result.push(e.c[1]);
@@ -334,7 +335,7 @@ export function attributes(attrs: {
 	var ident = attrs.id || "";
 	var classes = attrs.classes || [];
 	var keyvals: [string, string][] = [];
-	Object.keys(attrs).forEach(function(k) {
+	Object.keys(attrs).forEach(function (k) {
 		if (k !== "classes" && k !== "id") keyvals.push([k, attrs[k]]);
 	});
 	return [ident, classes, keyvals];
@@ -354,14 +355,12 @@ function elt<T extends EltType>(
 	eltType: T,
 	numargs: number,
 ): (...args: WrapArray<EltMap[T]>) => Elt<T> {
-	return function(...args: WrapArray<EltMap[T]>) {
+	return function (...args: WrapArray<EltMap[T]>) {
 		var len = args.length;
 		if (len !== numargs)
-			throw eltType +
-				" expects " +
-				numargs +
-				" arguments, but given " +
-				len;
+			throw (
+				eltType + " expects " + numargs + " arguments, but given " + len
+			);
 		return { t: eltType, c: len === 1 ? args[0] : args } as any;
 	};
 }
@@ -391,14 +390,13 @@ export async function filterAsync(
 	)) as PandocJson;
 }
 
-export function toJSONFilterAsync(action: FilterActionAsync) {
-	require("get-stdin")(function(json: any) {
-		var data = JSON.parse(json);
-		var format = process.argv.length > 2 ? process.argv[2] : "";
-		filterAsync(data, action, format).then(output =>
-			process.stdout.write(JSON.stringify(output)),
-		);
-	});
+export async function toJSONFilterAsync(action: FilterActionAsync) {
+	const json = await getStdin();
+	var data = JSON.parse(json);
+	var format = process.argv.length > 2 ? process.argv[2] : "";
+	filterAsync(data, action, format).then((output) =>
+		process.stdout.write(JSON.stringify(output)),
+	);
 }
 
 type RawMetaRecord = { [name: string]: RawMeta };
@@ -410,7 +408,7 @@ type RawMeta = string | boolean | RawMetaRecord | Array<RawMeta>;
  **/
 export function rawToMeta(e: RawMeta): PandocMetaValue {
 	if (Array.isArray(e)) {
-		return { t: "MetaList", c: e.map(x => rawToMeta(x)) };
+		return { t: "MetaList", c: e.map((x) => rawToMeta(x)) };
 	}
 	// warning: information loss: can't tell if it was a number or string
 	if (typeof e === "string" || typeof e === "number")
