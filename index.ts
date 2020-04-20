@@ -16,33 +16,26 @@ export type PandocJson = {
 };
 type FAReturn = void | AnyElt | Array<AnyElt>;
 
-export type SingleFilterAction = (
-	ele: AnyElt,
-	format: string,
-	meta: PandocMetaMap,
-) => FAReturn;
-export type ArrayFilterAction = (
-	ele: AnyElt[],
-	format: string,
-	meta: PandocMetaMap,
-) => Array<AnyElt>;
-export type FilterAction =
-	| SingleFilterAction
-	| { array?: ArrayFilterAction; single?: SingleFilterAction };
-
 export type SingleFilterActionAsync = (
 	ele: AnyElt,
 	format: string,
 	meta: PandocMetaMap,
-) => Promise<FAReturn>;
+) => Promise<FAReturn> | FAReturn;
 export type ArrayFilterActionAsync = (
 	ele: AnyElt[],
 	format: string,
 	meta: PandocMetaMap,
-) => Promise<Array<AnyElt>>;
+) => Promise<Array<AnyElt>> | Array<AnyElt>;
+
+/**
+ * allow both a function that filters single elements (compat with old version), as well as passing two filter functions:
+ * one that will be called with every list of children and can return a new list of children to replace them,
+ * and one that acts on single elements
+ */
 export type FilterActionAsync =
 	| SingleFilterActionAsync
 	| { array?: ArrayFilterActionAsync; single?: SingleFilterActionAsync };
+
 export type AttrList = Array<[string, string]>;
 
 export type Attr = [string, Array<string>, AttrList];
@@ -205,12 +198,13 @@ export type PandocMetaMap = Record<string, PandocMetaValue>;
  *
  * @param  {Function} action Callback to apply to every object
  */
-export async function toJSONFilter(action: FilterAction): Promise<void> {
+export async function toJSONFilter(action: FilterActionAsync) {
 	const json = await getStdin();
 	var data = JSON.parse(json);
 	var format = process.argv.length > 2 ? process.argv[2] : "";
-	var output = filter(data, action, format);
-	process.stdout.write(JSON.stringify(output));
+	filter(data, action, format).then((output) =>
+		process.stdout.write(JSON.stringify(output)),
+	);
 }
 
 function isElt(x: unknown): x is AnyElt {
@@ -227,40 +221,7 @@ function isEltArray(x: unknown[]): x is AnyElt[] {
  * @param  {Object}   meta   Pandoc metadata
  * @return {Object}          The modified tree
  */
-export function walk(
-	x: unknown,
-	action: FilterAction,
-	format: Format,
-	meta: PandocMetaMap,
-): unknown {
-	if (typeof action === "function") action = { single: action };
-	if (Array.isArray(x)) {
-		if (action.array && isEltArray(x)) {
-			x = action.array(x, format, meta);
-			if (!Array.isArray(x)) throw "impossible (just for ts)";
-		}
-		var array: unknown[] = [];
-		for (let item of x) {
-			let flatten = false;
-			if (isElt(item) && action.single) {
-				item = action.single(item, format, meta) || item;
-				if (Array.isArray(item)) flatten = true;
-			}
-			item = walk(item, action, format, meta);
-			if (flatten) array.push(...item);
-			else array.push(item);
-		}
-		return array;
-	} else if (typeof x === "object" && x !== null) {
-		var obj: any = {};
-		for (const k of Object.keys(x)) {
-			obj[k] = walk((x as any)[k], action, format, meta);
-		}
-		return obj;
-	}
-	return x;
-}
-export async function walkAsync(
+export async function walk(
 	x: unknown,
 	action: FilterActionAsync,
 	format: Format,
@@ -278,20 +239,53 @@ export async function walkAsync(
 				var res = (await action.single(item, format, meta)) || item;
 				if (Array.isArray(res)) {
 					for (const z of res) {
-						array.push(await walkAsync(z, action, format, meta));
+						array.push(await walk(z, action, format, meta));
 					}
 				} else {
-					array.push(await walkAsync(res, action, format, meta));
+					array.push(await walk(res, action, format, meta));
 				}
 			} else {
-				array.push(await walkAsync(item, action, format, meta));
+				array.push(await walk(item, action, format, meta));
 			}
 		}
 		return array;
 	} else if (typeof x === "object" && x !== null) {
 		var obj: any = {};
 		for (const k of Object.keys(x)) {
-			obj[k] = await walkAsync((x as any)[k], action, format, meta);
+			obj[k] = await walk((x as any)[k], action, format, meta);
+		}
+		return obj;
+	}
+	return x;
+}
+
+export function walkSync(
+	x: unknown,
+	action: (ele: AnyElt, format: string, meta: PandocMetaMap) => FAReturn,
+	format: Format,
+	meta: PandocMetaMap,
+) {
+	if (Array.isArray(x)) {
+		var array: unknown[] = [];
+		for (const item of x) {
+			if (isElt(item)) {
+				var res = action(item, format, meta) || item;
+				if (Array.isArray(res)) {
+					for (const z of res) {
+						array.push(walkSync(z, action, format, meta));
+					}
+				} else {
+					array.push(walkSync(res, action, format, meta));
+				}
+			} else {
+				array.push(walkSync(item, action, format, meta));
+			}
+		}
+		return array;
+	} else if (typeof x === "object" && x !== null) {
+		var obj: any = {};
+		for (const k of Object.keys(x)) {
+			obj[k] = walkSync((x as any)[k], action, format, meta);
 		}
 		return obj;
 	}
@@ -317,7 +311,7 @@ export function stringify(x: Tree | AnyElt | { t: "MetaString"; c: string }) {
 		else if (e.t === "SoftBreak") result.push(" ");
 		else if (e.t === "Para") result.push("\n");
 	};
-	walk(x, go, "", {});
+	walkSync(x, go, "", {});
 	return result.join("");
 }
 
@@ -368,35 +362,17 @@ function elt<T extends EltType>(
 /**
  * Filter the given object
  */
-export function filter(data: PandocJson, action: FilterAction, format: Format) {
-	return walk(
-		data,
-		action,
-		format,
-		data.meta || (data as any)[0].unMeta,
-	) as PandocJson;
-}
-
-export async function filterAsync(
+export async function filter(
 	data: PandocJson,
 	action: FilterActionAsync,
 	format: Format,
 ) {
-	return (await walkAsync(
+	return (await walk(
 		data,
 		action,
 		format,
 		data.meta || (data as any)[0].unMeta,
 	)) as PandocJson;
-}
-
-export async function toJSONFilterAsync(action: FilterActionAsync) {
-	const json = await getStdin();
-	var data = JSON.parse(json);
-	var format = process.argv.length > 2 ? process.argv[2] : "";
-	filterAsync(data, action, format).then((output) =>
-		process.stdout.write(JSON.stringify(output)),
-	);
 }
 
 type RawMetaRecord = { [name: string]: RawMeta };
@@ -436,7 +412,7 @@ export function metaToRaw(m: PandocMetaValue): RawMeta {
 		// warning: information loss: removes formatting
 		return stringify(m.c);
 	}
-	throw Error("never");
+	throw Error(`Unknown meta type ${(m as any).t}`);
 }
 /** meta root object is a map */
 export function metaMapToRaw(c: PandocMetaMap): RawMetaRecord {
@@ -490,4 +466,3 @@ export const Span = elt("Span", 2);
 
 // a few aliases
 export const stdio = toJSONFilter;
-export const stdioAsync = toJSONFilterAsync;
