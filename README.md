@@ -31,7 +31,7 @@ Async using native promise
 #!/usr/bin/env node
 "use strict";
 
-var pandoc = require("../../../index");
+var pandoc = require("pandoc-filter");
 var rp = require("request-promise-native");
 var Str = pandoc.Str;
 
@@ -46,6 +46,25 @@ async function action({ t: type, c: value }, format, meta) {
 }
 
 pandoc.stdio(action);
+```
+
+Using TypeScript:
+
+```typescript
+import { stdio, Str } from "pandoc-filter";
+
+stdio((ele) => {
+	if (ele.t === "Str") {
+		// c is typed as string
+		return Str(ele.c.toUpperCase());
+	}
+	if (ele.t === "Image") {
+		// ele.c is typed as a three-tuple
+		const [attr, label, target] = ele.c;
+		const [url, title] = target;
+		return Str("url was " + url);
+	}
+});
 ```
 
 ## Compatibility Notes

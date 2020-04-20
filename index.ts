@@ -36,13 +36,18 @@ export type FilterActionAsync =
 	| SingleFilterActionAsync
 	| { array?: ArrayFilterActionAsync; single?: SingleFilterActionAsync };
 
+/** list of key-value attributes */
 export type AttrList = Array<[string, string]>;
 
+/** [id, classes, list of key-value attributes] */
 export type Attr = [string, Array<string>, AttrList];
 
 export type MathType = { t: "DisplayMath" | "InlineMath" };
 export type QuoteType = { t: "SingleQuote" | "DoubleQuote" };
-export type Target = [string, string]; // [url, title]
+
+/** [url, title] */
+export type Target = [string, string];
+/** output file format */
 export type Format = string;
 
 export type CitationMode = {
