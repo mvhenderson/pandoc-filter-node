@@ -8,7 +8,7 @@
 var pandoc = require('../../../index');
 var Str = pandoc.Str;
 
-function action(type,value,format,meta) {
+function action({t: type, c: value},format,meta) {
 	if (type === 'Str') return Str(value.toUpperCase());
 }
 

@@ -12,7 +12,7 @@ var BulletList = pandoc.BulletList;
 var Para = pandoc.Para;
 var Strong = pandoc.Strong;
 
-function action(type, value, format, meta) {
+function action({t: type, c: value}, format, meta) {
 	if (type === 'DefinitionList') {
 		var bullets = [];
 		value.forEach(function (v) {
