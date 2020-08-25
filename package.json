@@ -13,7 +13,7 @@
 	"types": "index.d.ts",
 	"scripts": {
 		"test": "./node_modules/.bin/mocha -R spec -s 125",
-		"prepublish": "tsc"
+		"prepare": "tsc"
 	},
 	"keywords": [
 		"pandoc",
