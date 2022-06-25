@@ -350,7 +350,7 @@ type WrapArray<T> = T extends undefined
 	: [T];
 
 // Utility for creating constructor functions
-function elt<T extends EltType>(
+export function elt<T extends EltType>(
 	eltType: T,
 	numargs: number,
 ): (...args: WrapArray<EltMap[T]>) => Elt<T> {
