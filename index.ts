@@ -84,7 +84,42 @@ export type Alignment = {
 	t: "AlignLeft" | "AlignRight" | "AlignCenter" | "AlignDefault";
 };
 
-export type TableCell = Array<Block>;
+export type ColWidth = {
+	t: "ColWidth";
+	c: number;
+};
+
+export type ColWidthDefault = {
+	t: "ColWidthDefault";
+};
+
+export type TableCaption = [
+	Array<Inline>, // short
+	Array<Block>, // long
+];
+
+export type TableHead = [Attr, Array<TableRow>];
+
+export type TableBody = [
+	[
+		Attr,
+		number, // row head columns
+		Array<TableRow>, // intermediate head
+		Array<TableRow>, // body rows
+	],
+];
+
+export type TableFoot = [Attr, Array<Block>];
+
+export type TableRow = [Attr, Array<TableCell>];
+
+export type TableCell = [
+	Attr,
+	Alignment,
+	number, // row span
+	number, // col span
+	Array<Block>,
+];
 
 export type EltMap = {
 	// Inline
@@ -121,11 +156,12 @@ export type EltMap = {
 	Header: [number, Attr, Array<Inline>];
 	HorizontalRule: undefined;
 	Table: [
-		Array<Inline>,
-		Array<Alignment>,
-		Array<number>,
-		Array<TableCell>,
-		Array<Array<TableCell>>,
+		Attr,
+		TableCaption,
+		Array<[Alignment, ColWidth | ColWidthDefault]>,
+		TableHead,
+		TableBody,
+		TableFoot,
 	];
 	Div: [Attr, Array<Block>];
 	Null: undefined;
@@ -444,7 +480,7 @@ export const BulletList = elt("BulletList", 1);
 export const DefinitionList = elt("DefinitionList", 1);
 export const Header = elt("Header", 3);
 export const HorizontalRule = elt("HorizontalRule", 0);
-export const Table = elt("Table", 5);
+export const Table = elt("Table", 6);
 export const Div = elt("Div", 2);
 export const Null = elt("Null", 0);
 
