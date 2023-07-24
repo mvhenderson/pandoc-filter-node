@@ -93,10 +93,14 @@ export type ColWidthDefault = {
 	t: "ColWidthDefault";
 };
 
-export type TableCaption = [
+export type Caption = [
 	Array<Inline>, // short
 	Array<Block>, // long
 ];
+
+export type TableCaption = Caption;
+
+export type FigureCaption = Caption;
 
 export type TableHead = [Attr, Array<TableRow>];
 
@@ -163,6 +167,7 @@ export type EltMap = {
 		TableBody,
 		TableFoot,
 	];
+	Figure: [Attr, FigureCaption, Array<Block>];
 	Div: [Attr, Array<Block>];
 	Null: undefined;
 };
@@ -206,6 +211,7 @@ export type Block =
 	| Elt<"Header">
 	| Elt<"HorizontalRule">
 	| Elt<"Table">
+	| Elt<"Figure">
 	| Elt<"Div">
 	| Elt<"Null">;
 
@@ -481,6 +487,7 @@ export const DefinitionList = elt("DefinitionList", 1);
 export const Header = elt("Header", 3);
 export const HorizontalRule = elt("HorizontalRule", 0);
 export const Table = elt("Table", 6);
+export const Figure = elt("Figure", 3);
 export const Div = elt("Div", 2);
 export const Null = elt("Null", 0);
 
